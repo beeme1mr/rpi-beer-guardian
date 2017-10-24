@@ -2,15 +2,15 @@ const kb = require("node-key-sender");
 
 class keyboard {
   static animateIn() {
-    kb.sendkey("a");
+    kb.sendKey("a");
   }
 
   static animateOut() {
-    kb.sendkey("h");
+    kb.sendKey("h");
   }
 
   static animateBack() {
-    kb.sendkey("r");
+    kb.sendKey("r");
   }
 }
 

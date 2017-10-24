@@ -22,13 +22,13 @@ class Motion {
         this.screen = new Screen();
         await this.screen.animateOn();
         if (this.isArm()) {
-            this.rpio.poll(this.ping, this.action.bind(this));
+            this.rpio.poll(this.pin, this.action.bind(this));
         }
     }
 
     readPin() {
         if(this.isArm()) {
-            return rpio.read(this.pin);
+            return this.rpio.read(this.pin);
         } else {
             return this._mockValue
         }
@@ -43,7 +43,6 @@ class Motion {
         } else {
             console.log("They gone!");
             keyboard.animateBack();
-            this.key
             this.timer.startTimer(() => {
                 console.log("timer ended!");
                 keyboard.animateOut()

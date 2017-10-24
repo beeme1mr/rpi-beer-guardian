@@ -15,7 +15,8 @@
   },
   "dependencies": {
     "node-key-sender": "^1.0.9",
-    "npm-arch-dependencies": "^0.1.0"
+    "npm-arch-dependencies": "^0.1.0",
+    "rpio": "^0.9.19"
   },
   "armDependencies": {
     "rpio": "0.9.19"

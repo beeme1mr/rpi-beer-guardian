@@ -2,6 +2,7 @@ const arch = require('os').arch();
 
 const Timer = require("./timer");
 const Screen = require("./screen");
+const keyboard = require("./keyboard");
 
 class Motion {
     constructor(pin) {
@@ -9,19 +10,20 @@ class Motion {
         if (this.isArm()) {
             this.rpio = require("rpio");
         
-            this.rpio.open(pin, rpio.INPUT);
+            this.rpio.open(pin, this.rpio.INPUT);
         } else {
             console.log("Non ARM system detected.");
             this._mockValue = 1;
         }
     }
 
-    start() {
-        if (this.isArm()) {
-            this.rpio.poll(PIR_PIN, action);
-        }
+    async start() {
         this.timer = new Timer();
         this.screen = new Screen();
+        await this.screen.animateOn();
+        if (this.isArm()) {
+            this.rpio.poll(this.ping, this.action.bind(this));
+        }
     }
 
     readPin() {
@@ -34,15 +36,18 @@ class Motion {
 
     async action() {
         if (this.readPin()) {
-            console.log("Person detected");
+            console.log("Movement detected!");
             this.timer.stopTimer();
             await this.screen.animateOn();
+            keyboard.animateIn();
         } else {
             console.log("They gone!");
-            const screen = this.screen;
+            keyboard.animateBack();
+            this.key
             this.timer.startTimer(() => {
                 console.log("timer ended!");
-                screen.animateOff();
+                keyboard.animateOut()
+                this.screen.animateOff();
             });
         }
     }

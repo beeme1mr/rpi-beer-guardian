@@ -1,3 +1,4 @@
+const arch = require('os').arch();
 const path = require("path");
 const util = require("util");
 const fs = require("fs");
@@ -9,14 +10,15 @@ const readFile = util.promisify(fs.readFile);
 
 const sleep = require("./sleep");
 
-const backlightPath = "/sys/class/backlight/rpi_backlight";
-
-class Backlight {
+let backlightPath;
+class Screen {
   constructor() {
-    if (!fs.existsSync(backlightPath)) {
-      throw new Error(
-        "Backlight control not supported (" + backlightPath + " does not exist)"
-      );
+    if (arch === "arm") {
+      backlightPath = "/sys/class/backlight/rpi_backlight";
+      testPath(backlightPath);
+    } else {
+      backlightPath = path.join(__dirname, "rpi_backlight");
+      testPath(backlightPath);
     }
   }
 
@@ -32,11 +34,11 @@ class Backlight {
     await this.powerOn();
     const max = await this.getMaxBrightness();
     await this.animate(max);
-    keyboard.animateOn();
+    //keyboard.animateOn();
   }
 
   async animateOff() {
-    keyboard.animateOut();
+    //keyboard.animateOut();
     await this.animate(0);
     await this.powerOff();
   }
@@ -69,7 +71,15 @@ class Backlight {
 
   async getMaxBrightness() {
     const maxBrightness = await readValue("max_brightness");
-    return parseInt(maxBrightnessValue, 10);
+    return parseInt(maxBrightness, 10);
+  }
+}
+
+function testPath(path) {
+  if (!fs.existsSync(path)) {
+    throw new Error(
+      "Backlight control not supported (" + path + " does not exist)"
+    );
   }
 }
 

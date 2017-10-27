@@ -1,4 +1,4 @@
-const TIMEOUT = 5 * 60;
+const TIMEOUT = 5000;
 
 class Timer {
   updateTimer(t = TIMEOUT) {
@@ -7,12 +7,14 @@ class Timer {
   }
 
   stopTimer() {
+    console.log("timer cleared");
     clearTimeout(this.timer);
   }
 
   startTimer(shutdownAnimation) {
+    console.log("timer started");
     this.timer = setTimeout(shutdownAnimation, TIMEOUT);
   }
 }
 
-module.export = Timer;
+module.exports = Timer;

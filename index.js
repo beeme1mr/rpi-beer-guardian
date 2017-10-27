@@ -1,32 +1,15 @@
-const rpio = require("rpio");
+const Motion = require("./motion");
 
-const Screen = require("./screen");
-const Timer = require("./timer");
-const keyboard = require("./keyboard");
-
-const screen = new Screen();
-const timer = new Timer();
-
-const PIR_PIN = 11;
-
-rpio.open(PIR_PIN, rpio.INPUT);
-rpio.poll(PIR_PIN, motionDetected);
-
-async function motionDetected() {
-  if (rpio.read(PIR_PIN)) {
-    console.log("Person detected");
-    timer.stopTimer();
-    await screen.animateOn();
-  } else {
-    console.log("They gone!");
-    // reset display to home screen
-    keyboard.animateBack();
-    timer.startTimer(screen.animateOff);
-  }
+try {
+  const motion = new Motion(11);
+  motion.start();
+} catch (err) {
+  console.log(err);
+  process.exit(1);
 }
 
 process.on("SIGINT", async function() {
   console.log("Exiting the script");
-  await screen.animateOn();
+  await motion.exit();
   process.exit();
 });
